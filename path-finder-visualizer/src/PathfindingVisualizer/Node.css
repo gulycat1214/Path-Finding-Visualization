@@ -19,5 +19,13 @@
 }
 
 .node-is-path {
-  background-color: blue;
+  background-color: yellow;
+}
+
+.node-is-visited {
+  background-color: lightskyblue;
+}
+
+.node-next-neighbor {
+  background-color: green;
 }
