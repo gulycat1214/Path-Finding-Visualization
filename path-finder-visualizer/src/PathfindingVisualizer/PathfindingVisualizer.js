@@ -1,6 +1,8 @@
 import React, { Component, useEffect, useState } from 'react';
 import Node from './Node';
 import './PathfindingVisualizer.css';
+import {dijkstra, getNodesInShortestPathOrder} from '../Algorithms/Dijkstra';
+
 export default function PathfindingVisualizer(){
 
     const [nodes, setNodes] = useState([]);
@@ -8,6 +10,19 @@ export default function PathfindingVisualizer(){
     const handleMouseEnter = (row, col) => {
         const newGrid = addOrDeleteWall(nodes, row, col);
         setNodes(newGrid);
+    }
+
+    const test = () => {
+        const visitedNodes = dijkstra(nodes, nodes[0][0], nodes[14][49]);
+        const shortestPath = getNodesInShortestPathOrder(nodes[14][49]);
+        paintNodes(shortestPath);
+        console.log(shortestPath)
+    }
+
+    const paintNodes = (nodes) => {
+        for(let i = 0; i < nodes.length; i++) {
+            document.getElementById(`node-${nodes[i].row}-${nodes[i].col}`).className = 'node node-is-path';
+        }
     }
 
     useEffect(() => {
@@ -59,6 +74,7 @@ export default function PathfindingVisualizer(){
         </div>
         <div className="button">
             <button
+                onClick={() => test()}
                 type="button"
             >Dijkstra</button>
         </div>

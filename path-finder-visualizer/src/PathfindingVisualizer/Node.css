@@ -17,3 +17,7 @@
 .node-is-wall {
   background-color: black;
 }
+
+.node-is-path {
+  background-color: blue;
+}

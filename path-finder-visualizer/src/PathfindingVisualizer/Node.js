@@ -7,6 +7,7 @@ export default function Node (props) {
 
     return(
         <div 
+            id={`node-${row}-${col}`}
             className={`node ${extraClassName}`}
             onClick={() => {
                 addWall(row, col);
