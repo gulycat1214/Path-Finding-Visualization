@@ -2,16 +2,51 @@ import React, { useEffect, useState } from 'react';
 import Node from './Node';
 import './PathfindingVisualizer.css';
 import NavigationBar from './NavigationBar';
+import {
+    Button
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import {dijkstra, getNodesInShortestPathOrder} from '../Algorithms/Dijkstra';
+
+const useStyles = makeStyles({
+    button1: {
+        margin: '20px',
+        backgroundColor: 'red',
+        fontWeight: 'bold'
+    },
+    button2: {
+        margin: '20px',
+        backgroundColor: 'green',
+        fontWeight: 'bold'
+    },
+    button3: {
+        margin: '20px',
+        backgroundColor: 'purple',
+        fontWeight: 'bold'
+    },
+    button4: {
+        margin: '20px',
+        backgroundColor: 'yellow',
+        fontWeight: 'bold'
+    },
+    button5: {
+        margin: '20px',
+        backgroundColor: 'brown',
+        fontWeight: 'bold'
+    },
+})
 
 export default function PathfindingVisualizer(){
 
-    const BOARD_WIDTH = 85;
+    const classes = useStyles();
+
+    const BOARD_WIDTH = 60;
     const BOARD_LENGTH = 30;
     const INITIAL_POS_x = 0;
     const INITIAL_POS_y = 0;
     const FINAL_POS_x = 25;
-    const FINAL_POS_y = 70;
+    const FINAL_POS_y = 54;
+
 
     const [nodes, setNodes] = useState([]);
     const [mouseIsPressed, setMouseIsPressed] = useState(false);
@@ -37,7 +72,7 @@ export default function PathfindingVisualizer(){
             if ( i === visitedNodes.length) {
                 setTimeout(() => {
                     showPath(shortestPath);
-                }, 2*i);
+                }, i);
                 return;
             }
             setTimeout(() => {
@@ -70,8 +105,7 @@ export default function PathfindingVisualizer(){
         }
     }
 
-
-    useEffect(() => {
+    const initializeGrid = () => {
         let nodes = [];
         for( let row = 0; row < BOARD_LENGTH; row++) {
             const currentRow = [];
@@ -90,12 +124,24 @@ export default function PathfindingVisualizer(){
             }
             nodes.push(currentRow);
         }
-        setNodes(nodes);
+        setNodes(nodes);        
+    }
+
+    useEffect(() => {
+        initializeGrid();
     }, []);
 
     return(
         <>
         <NavigationBar></NavigationBar>
+        <div className="buttons-container">
+            <Button variant="contained" className={classes.button1}>DIJKSTRA</Button>
+            <Button variant="contained" className={classes.button2} onClick={() => computeDijkstra()}>VISUALIZE</Button>
+            <Button variant="contained" className={classes.button3}>STOP</Button>
+            <Button variant="contained" className={classes.button4}>CLEAR GRID</Button>
+            <Button variant="contained" className={classes.button5}>HOW IT WORKS</Button>
+
+        </div>
         <div className="grid">
             {nodes.map((row, rowIndex) => {
                 return(
@@ -119,15 +165,6 @@ export default function PathfindingVisualizer(){
                     </div>
                 )
             })}
-        </div>
-        <div className="button">
-            <button
-                onClick={() => computeDijkstra()}
-                type="button"
-            >Dijkstra</button>
-            <button
-                type="button"
-            >Clear</button>
         </div>
         </>
     );

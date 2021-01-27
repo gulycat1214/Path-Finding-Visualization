@@ -1,4 +1,15 @@
 .grid {
   font-size: 0;
   margin: 20px;
+  text-align: center;
+}
+
+.button {
+  background-color: royalblue;
+  margin: 20px;
+  color: white;
+}
+
+.buttons-container {
+  text-align: center;
 }
