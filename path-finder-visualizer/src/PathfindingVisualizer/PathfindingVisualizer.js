@@ -7,6 +7,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {dijkstra, getNodesInShortestPathOrder} from '../Algorithms/Dijkstra';
+import HelpDialog from './HelpDialog';
 
 const useStyles = makeStyles({
     button1: {
@@ -40,12 +41,12 @@ export default function PathfindingVisualizer(){
 
     const classes = useStyles();
 
-    const BOARD_WIDTH = 60;
-    const BOARD_LENGTH = 30;
-    const INITIAL_POS_x = 0;
-    const INITIAL_POS_y = 0;
-    const FINAL_POS_x = 25;
-    const FINAL_POS_y = 54;
+    const BOARD_WIDTH = 55;
+    const BOARD_LENGTH = 20;
+    const INITIAL_POS_x = 7;
+    const INITIAL_POS_y = 8;
+    const FINAL_POS_x = 19;
+    const FINAL_POS_y = 48;
 
 
     const [nodes, setNodes] = useState([]);
@@ -97,15 +98,33 @@ export default function PathfindingVisualizer(){
             return;
         }
         for(let i = 0; i < nodes.length; i++) {
-            if( (nodes[i].row === INITIAL_POS_x && nodes[i].col === INITIAL_POS_y) 
-                || (nodes[i].row === FINAL_POS_x && nodes[i].col === FINAL_POS_y)) continue;
+            if( nodeIsInitialOrLast(nodes[i].row, nodes[i].col) ) continue;
             setTimeout(function() {
                 document.getElementById(`node-${nodes[i].row}-${nodes[i].col}`).className = 'node node-is-path';
             }, 10);
         }
     }
 
-    const initializeGrid = () => {
+
+    const nodeIsInitialOrLast = (row, col) => {
+        if( (row === INITIAL_POS_x && col === INITIAL_POS_y) 
+        || (row === FINAL_POS_x && col === FINAL_POS_y)) {
+            return true;
+        }
+        return false;
+    }
+
+    const clearGrid = () => {
+        setNodes(createEmptyGrid());
+        for( let row = 0; row < BOARD_LENGTH; row++) {
+            for( let col = 0; col < BOARD_WIDTH; col++) {
+                if(nodeIsInitialOrLast(row, col)) continue;
+                document.getElementById(`node-${row}-${col}`).className = 'node'; 
+            }
+        }
+    }
+
+    const createEmptyGrid = () => {
         let nodes = [];
         for( let row = 0; row < BOARD_LENGTH; row++) {
             const currentRow = [];
@@ -124,23 +143,22 @@ export default function PathfindingVisualizer(){
             }
             nodes.push(currentRow);
         }
-        setNodes(nodes);        
+        console.log(nodes);
+        return nodes;       
     }
 
     useEffect(() => {
-        initializeGrid();
+        setNodes(createEmptyGrid());
     }, []);
 
     return(
         <>
         <NavigationBar></NavigationBar>
         <div className="buttons-container">
-            <Button variant="contained" className={classes.button1}>DIJKSTRA</Button>
+            <Button variant="contained" className={classes.button1} onClick={() => alert('No more algorithms yet')}>DIJKSTRA</Button>
             <Button variant="contained" className={classes.button2} onClick={() => computeDijkstra()}>VISUALIZE</Button>
-            <Button variant="contained" className={classes.button3}>STOP</Button>
-            <Button variant="contained" className={classes.button4}>CLEAR GRID</Button>
-            <Button variant="contained" className={classes.button5}>HOW IT WORKS</Button>
-
+            <Button variant="contained" className={classes.button4} onClick={() => clearGrid()}>CLEAR GRID</Button>
+            <HelpDialog></HelpDialog>
         </div>
         <div className="grid">
             {nodes.map((row, rowIndex) => {
