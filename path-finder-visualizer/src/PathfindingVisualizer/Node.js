@@ -9,7 +9,7 @@ export default function Node (props) {
         <div 
             id={`node-${row}-${col}`}
             className={`node ${extraClassName}`}
-            onMouseUp={() => onMouseUp()}
+            onMouseUp={() => onMouseUp(row, col)}
             onMouseDown={() => onMouseDown(row, col)}
             onMouseEnter={() => onMouseEnter(row, col)}
         >

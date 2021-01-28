@@ -6,6 +6,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { makeStyles } from '@material-ui/core/styles';
+
+
+// This React component is the pop-up dialog to explain 
+// how to use the dashboard
+
 export default function HelpDialog() {
   const [open, setOpen] = React.useState(false);
 

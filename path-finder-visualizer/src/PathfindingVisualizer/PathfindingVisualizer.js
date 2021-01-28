@@ -8,6 +8,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import {dijkstra, getNodesInShortestPathOrder} from '../Algorithms/Dijkstra';
 import HelpDialog from './HelpDialog';
+import AlgorithmSelector from './AlgorithmSelector';
 
 const useStyles = makeStyles({
     button1: {
@@ -41,33 +42,38 @@ export default function PathfindingVisualizer(){
 
     const classes = useStyles();
 
-    const BOARD_WIDTH = 55;
-    const BOARD_LENGTH = 20;
-    const INITIAL_POS_x = 7;
-    const INITIAL_POS_y = 8;
-    const FINAL_POS_x = 19;
-    const FINAL_POS_y = 48;
+    // board characteristics
+    const [BOARD_WIDTH, setBoardWidth] = useState(55);
+    const [BOARD_LENGTH, setBoardLength] = useState(20);
+    const [INITIAL_POS_x, setInitialX] = useState(7);
+    const [INITIAL_POS_y, setInitialY] = useState(8);
+    const [FINAL_POS_x, setFinalX] = useState(9);
+    const [FINAL_POS_y, setFinalY] = useState(36);
 
+    const [algorithm, setAlgorithm] = useState('Dijkstra');
 
-    const [nodes, setNodes] = useState([]);
+    //grid is a 2D array [][]
+    const [grid, setGrid] = useState([]);
+    //variable to control if mouse is pressed (add walls or move initial points)
     const [mouseIsPressed, setMouseIsPressed] = useState(false);
 
+    //when mouse scrolls over
     const handleMouseEnter = (row, col) => {
         if(!mouseIsPressed) return;
-        const newGrid = addOrDeleteWall(nodes, row, col);
-        setNodes(newGrid);   
+        const newGrid = addOrDeleteWall(grid, row, col);
+        setGrid(newGrid);             
     }
-    
+    //when mouse presses a "node" aka <div>
     const handleMouseDown = (row, col) => {
-        const newGrid = addOrDeleteWall(nodes, row, col)
         setMouseIsPressed(true);
-        setNodes(newGrid);
+        const newGrid = addOrDeleteWall(grid, row, col);
+        setGrid(newGrid);            
     }
-
-    const handleMouseUp = () => {
+    //when mouse is unpressed
+    const handleMouseUp = (row, col) => {
         setMouseIsPressed(false);
     }
-
+    //visual animation for computing Dijkstra's algorithm
     const animatedDijkstra = (visitedNodes, shortestPath) => {
         for(let i = 1; i <= visitedNodes.length; i++) {
             if ( i === visitedNodes.length) {
@@ -84,14 +90,27 @@ export default function PathfindingVisualizer(){
             }, i)
         }
     }
-
+    //compute actual dijkstra algorithm
     const computeDijkstra = () => {
-        const visitedNodes = dijkstra(nodes, nodes[INITIAL_POS_x][INITIAL_POS_y], nodes[FINAL_POS_x][FINAL_POS_y]);
+        const visitedNodes = dijkstra(grid, grid[INITIAL_POS_x][INITIAL_POS_y], grid[FINAL_POS_x][FINAL_POS_y]);
         console.log(visitedNodes);
-        const shortestPath = getNodesInShortestPathOrder(nodes[FINAL_POS_x][FINAL_POS_y]);
+        const shortestPath = getNodesInShortestPathOrder(grid[FINAL_POS_x][FINAL_POS_y]);
         animatedDijkstra(visitedNodes, shortestPath);
     }
 
+    const visualizeAlgorithm = () => {
+        if(algorithm === 'Dijkstra') {
+            computeDijkstra();
+        } else {
+            alert('Not implemented yet');
+        }
+    }
+
+    const changeAlgorithm = (algorithm) => {
+        setAlgorithm(algorithm);
+    }
+
+    //show shortest path
     const showPath = (nodes) => {
         if(nodes.length === 1) {
             alert('No path')
@@ -104,8 +123,7 @@ export default function PathfindingVisualizer(){
             }, 10);
         }
     }
-
-
+    //Helper method to detect if node is initial or last
     const nodeIsInitialOrLast = (row, col) => {
         if( (row === INITIAL_POS_x && col === INITIAL_POS_y) 
         || (row === FINAL_POS_x && col === FINAL_POS_y)) {
@@ -113,9 +131,9 @@ export default function PathfindingVisualizer(){
         }
         return false;
     }
-
+    //clear grid (board)
     const clearGrid = () => {
-        setNodes(createEmptyGrid());
+        setGrid(createEmptyGrid());
         for( let row = 0; row < BOARD_LENGTH; row++) {
             for( let col = 0; col < BOARD_WIDTH; col++) {
                 if(nodeIsInitialOrLast(row, col)) continue;
@@ -123,9 +141,9 @@ export default function PathfindingVisualizer(){
             }
         }
     }
-
+    //initialize grid
     const createEmptyGrid = () => {
-        let nodes = [];
+        let grid = [];
         for( let row = 0; row < BOARD_LENGTH; row++) {
             const currentRow = [];
             for( let col = 0; col < BOARD_WIDTH; col++) {
@@ -141,27 +159,42 @@ export default function PathfindingVisualizer(){
                 }
                 currentRow.push(currentNode);
             }
-            nodes.push(currentRow);
+            grid.push(currentRow);
         }
-        console.log(nodes);
-        return nodes;       
+        console.log(grid);
+        return grid;       
     }
+    //method to add or delete walls when clicking the grid
+    const addOrDeleteWall = (grid, row, col) => {
+        const newGrid = grid.slice();
+        const node = newGrid[row][col];
+        const newNode = {
+            ...node,
+            isWall: !node.isWall,
+        };
+        newGrid[row][col] = newNode;
+        return newGrid;
+    }
+    
 
     useEffect(() => {
-        setNodes(createEmptyGrid());
+        setGrid(createEmptyGrid());
     }, []);
 
     return(
         <>
         <NavigationBar></NavigationBar>
         <div className="buttons-container">
-            <Button variant="contained" className={classes.button1} onClick={() => alert('No more algorithms yet')}>DIJKSTRA</Button>
-            <Button variant="contained" className={classes.button2} onClick={() => computeDijkstra()}>VISUALIZE</Button>
+            <AlgorithmSelector
+                changeAlgorithm={changeAlgorithm}
+                currentAlgorithm={algorithm}
+            ></AlgorithmSelector>
+            <Button variant="contained" className={classes.button2} onClick={() => visualizeAlgorithm()}>VISUALIZE</Button>
             <Button variant="contained" className={classes.button4} onClick={() => clearGrid()}>CLEAR GRID</Button>
             <HelpDialog></HelpDialog>
         </div>
         <div className="grid">
-            {nodes.map((row, rowIndex) => {
+            {grid.map((row, rowIndex) => {
                 return(
                     <div>
                         {row.map((node, nodeIndex) => {
@@ -176,7 +209,7 @@ export default function PathfindingVisualizer(){
                                     isWall={isWall}
                                     onMouseDown={(row, col) => handleMouseDown(row, col)}
                                     onMouseEnter={(row, col) => handleMouseEnter(row, col)}
-                                    onMouseUp={() => handleMouseUp()}
+                                    onMouseUp={(row, col) => handleMouseUp(row, col)}
                                 ></Node>
                             )
                         })}
@@ -186,15 +219,4 @@ export default function PathfindingVisualizer(){
         </div>
         </>
     );
-}
-
-const addOrDeleteWall = (grid, row, col) => {
-    const newGrid = grid.slice();
-    const node = newGrid[row][col];
-    const newNode = {
-        ...node,
-        isWall: !node.isWall,
-    };
-    newGrid[row][col] = newNode;
-    return newGrid;
 }
