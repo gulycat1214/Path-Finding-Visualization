@@ -15,6 +15,6 @@ DFS, Greedy, A*, Bidirectional, Random Walk
 
 ## Live demo:
 ```
-To add yet
+https://gulycat1214.github.io/Path-Finding-Visualization/
 ``` 
 
