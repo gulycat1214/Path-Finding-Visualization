@@ -1,7 +1,7 @@
 export function bfs(grid, startNode, finishNode) {
     const unvisitedNodes = getAllNodes(grid);
     const visitedNodes = [];
-    while(unvisitedNodes.length != 0) {
+    while(unvisitedNodes.length !== 0) {
         sortNodesByDistance(unvisitedNodes);
         const closestNode = unvisitedNodes.shift();
         if(closestNode.isWall) continue;

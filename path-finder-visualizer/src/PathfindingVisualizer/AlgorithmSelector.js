@@ -12,7 +12,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 export default function AlgorithmSelector(props) {
   const [open, setOpen] = React.useState(false);
-  const algorithms = ['Dijkstra', 'BFS (Breadth-first search)', 'DFS (Depth-first search)'];
+  const algorithms = ['Dijkstra', 'BFS (Breadth-first search)'];
 
   const { changeAlgorithm, currentAlgorithm } = props;
 
