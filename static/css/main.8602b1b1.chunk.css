@@ -1,0 +1,2 @@
+.node{width:30px;height:30px;background-color:#fff;outline:1px solid rgba(144,175,175,.75);display:inline-block}.node-finish{background-color:red}.node-start{background-color:green}.node-is-wall{background-color:#000}.node-is-path{background-color:#ff0}.node-is-visited{background-color:#87cefa}.node-next-neighbor{background-color:green}.grid{font-size:0;margin:20px;text-align:center}.button{background-color:#4169e1;margin:20px;color:#fff}.buttons-container{text-align:center}
+/*# sourceMappingURL=main.8602b1b1.chunk.css.map */
