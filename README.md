@@ -5,12 +5,12 @@ This tool has been developed to test the speed and efficiency of various searchi
 
 ## Implemented algorithms
 ```
-Dijkstra
+Dijkstra (non weighted), BFS
 ```
 
 ## Algorithms to implement
 ```
-BFS, DFS, Greedy, A*, Bidirectional, Random Walk
+DFS, Greedy, A*, Bidirectional, Random Walk
 ```
 
 ## Live demo:
