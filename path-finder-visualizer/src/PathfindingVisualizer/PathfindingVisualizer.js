@@ -7,6 +7,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {dijkstra, getNodesInShortestPathOrder} from '../Algorithms/Dijkstra';
+import {bfs} from '../Algorithms/Bfs';
 import HelpDialog from './HelpDialog';
 import AlgorithmSelector from './AlgorithmSelector';
 
@@ -43,12 +44,12 @@ export default function PathfindingVisualizer(){
     const classes = useStyles();
 
     // board characteristics
-    const [BOARD_WIDTH, setBoardWidth] = useState(55);
-    const [BOARD_LENGTH, setBoardLength] = useState(20);
-    const [INITIAL_POS_x, setInitialX] = useState(7);
-    const [INITIAL_POS_y, setInitialY] = useState(8);
-    const [FINAL_POS_x, setFinalX] = useState(9);
-    const [FINAL_POS_y, setFinalY] = useState(36);
+    const BOARD_WIDTH = 55;
+    const BOARD_LENGTH= 23;
+    const INITIAL_POS_x = 7;
+    const INITIAL_POS_y = 8;
+    const FINAL_POS_x = 9;
+    const FINAL_POS_y = 36;
 
     const [algorithm, setAlgorithm] = useState('Dijkstra');
 
@@ -74,7 +75,7 @@ export default function PathfindingVisualizer(){
         setMouseIsPressed(false);
     }
     //visual animation for computing Dijkstra's algorithm
-    const animatedDijkstra = (visitedNodes, shortestPath) => {
+    const animatedVisualization = (visitedNodes, shortestPath) => {
         for(let i = 1; i <= visitedNodes.length; i++) {
             if ( i === visitedNodes.length) {
                 setTimeout(() => {
@@ -93,14 +94,21 @@ export default function PathfindingVisualizer(){
     //compute actual dijkstra algorithm
     const computeDijkstra = () => {
         const visitedNodes = dijkstra(grid, grid[INITIAL_POS_x][INITIAL_POS_y], grid[FINAL_POS_x][FINAL_POS_y]);
-        console.log(visitedNodes);
         const shortestPath = getNodesInShortestPathOrder(grid[FINAL_POS_x][FINAL_POS_y]);
-        animatedDijkstra(visitedNodes, shortestPath);
+        animatedVisualization(visitedNodes, shortestPath);
+    }
+
+    const computeBfs = () => {
+        const visitedNodes = bfs(grid, grid[INITIAL_POS_x][INITIAL_POS_y], grid[FINAL_POS_x][FINAL_POS_y]);
+        const shortestPath = getNodesInShortestPathOrder(grid[FINAL_POS_x][FINAL_POS_y]);
+        animatedVisualization(visitedNodes, shortestPath);
     }
 
     const visualizeAlgorithm = () => {
         if(algorithm === 'Dijkstra') {
             computeDijkstra();
+        } else if(algorithm === 'BFS (Breadth-first search)') {
+            computeBfs();
         } else {
             alert('Not implemented yet');
         }
@@ -161,7 +169,6 @@ export default function PathfindingVisualizer(){
             }
             grid.push(currentRow);
         }
-        console.log(grid);
         return grid;       
     }
     //method to add or delete walls when clicking the grid
@@ -196,7 +203,7 @@ export default function PathfindingVisualizer(){
         <div className="grid">
             {grid.map((row, rowIndex) => {
                 return(
-                    <div>
+                    <div key={rowIndex}>
                         {row.map((node, nodeIndex) => {
                             const {row, col, isStart, isFinish, isWall} = node;
                             return(

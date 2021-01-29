@@ -56,7 +56,7 @@ export default function AlgorithmSelector(props) {
         <DialogContent>
           {
             algorithms.map((algorithmName, index) => {
-              return <Button className={classes.button2} onClick={() => {
+              return <Button key={index} className={classes.button2} onClick={() => {
                 changeAlgorithm(algorithmName);
                 handleClose();
               }}>{algorithmName}</Button>
